@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -180,7 +181,6 @@
   }
 }
 </script>
-<link rel="stylesheet" href="/index.css">
 </head>
 <body class="bg-gray-100">
 
@@ -336,8 +336,8 @@
                 <main id="dashboard-main-content" class="flex-1 overflow-x-hidden overflow-y-auto bg-[#FDF5E6] pb-20 md:pb-6 p-4 md:p-6" style="-webkit-overflow-scrolling: touch;">
                     <!-- Dashboard Section -->
                     <section id="dashboard" class="content-section">
-                        <div id="motivation-slider" class="relative w-full max-w-4xl mx-auto h-48 bg-gradient-to-r from-[#DAA520] to-[#c7951c] rounded-xl shadow-lg overflow-hidden mb-8">
-                            <div id="slider-content" class="absolute inset-0 flex items-center justify-center p-6 text-white text-center transition-opacity duration-1000"></div>
+                        <div id="motivation-slider" class="relative w-full max-w-4xl mx-auto h-56 bg-gradient-to-r from-gray-900 via-amber-800 to-gray-900 rounded-xl shadow-lg overflow-hidden mb-8">
+                            <div id="slider-content" class="absolute inset-0 text-white text-center transition-opacity duration-1000"></div>
                             <button id="prev-slide" class="absolute top-1/2 left-2 transform -translate-y-1/2 bg-white/20 p-2 rounded-full hover:bg-white/40">❮</button>
                             <button id="next-slide" class="absolute top-1/2 right-2 transform -translate-y-1/2 bg-white/20 p-2 rounded-full hover:bg-white/40">❯</button>
                         </div>
@@ -365,7 +365,7 @@
                             </button>
                             <button class="main-nav-button bg-[#F5DEB3] p-4 md:p-6 rounded-xl shadow flex flex-col items-center justify-center text-center hover:bg-[#DAA520]/20 transition" data-target="#pengaturan">
                                 <span class="text-3xl md:text-4xl text-[#5A3825] mb-2">📤</span>
-                                <span class="text-sm md:text-lg font-semibold text-[#5A3825]">Ekspor</span>
+                                <span class="text-sm md:text-lg font-semibold text-[#5A3825]">Pengaturan</span>
                             </button>
                         </div>
 
@@ -598,15 +598,28 @@
                     </section>
 
                     <section id="pengaturan" class="content-section hidden">
-                        <h1 class="text-3xl font-bold text-[#5A3825] mb-6">Pengaturan & Ekspor</h1>
-                         <div class="bg-[#F5DEB3] p-6 rounded-xl shadow-md max-w-3xl mx-auto">
-                             <h2 class="text-xl font-bold text-[#5A3825] mb-4">Ekspor Data</h2>
-                             <p class="text-stone-600 mb-4">Ekspor data santri dan progres hafalan mereka ke dalam format file CSV.</p>
-                            <button id="export-csv-btn" class="bg-green-600 text-white py-2 px-4 rounded-lg shadow hover:bg-green-700 transition">Ekspor ke CSV</button>
-
-                            <h2 class="text-xl font-bold text-[#5A3825] mt-8 mb-4">Reset Data Hafalan</h2>
-                            <p class="text-stone-600 mb-4">Tindakan ini akan menghapus semua progres hafalan dan riwayat penilaian santri. Nama santri akan tetap ada.</p>
-                            <button id="reset-hafalan-btn" class="bg-red-600 text-white py-2 px-4 rounded-lg shadow hover:bg-red-700 transition">Reset Data Hafalan</button>
+                        <h1 class="text-3xl font-bold text-[#5A3825] mb-6">Pengaturan & Data</h1>
+                        <div class="bg-[#F5DEB3] p-6 rounded-xl shadow-md max-w-3xl mx-auto">
+                            <div>
+                                <h2 class="text-xl font-bold text-[#5A3825] mb-2">Manajemen Data</h2>
+                                <p class="text-stone-600 mb-4">Impor data santri dari file CSV, atau ekspor data yang ada. Format impor: "Nama Santri,Nama Kelas".</p>
+                                <div class="flex flex-wrap gap-4">
+                                    <button id="export-csv-btn" class="bg-green-600 text-white py-2 px-4 rounded-lg shadow hover:bg-green-700 transition">Ekspor ke CSV</button>
+                                    
+                                    <input type="file" id="import-csv-input" class="hidden" accept=".csv, text/csv">
+                                    <button id="import-csv-btn" class="bg-blue-600 text-white py-2 px-4 rounded-lg shadow hover:bg-blue-700 transition">
+                                        Impor dari CSV
+                                    </button>
+                                </div>
+                            </div>
+            
+                            <div class="my-6 border-t border-amber-800/20"></div>
+            
+                            <div class="border-2 border-red-300 bg-red-50 p-4 rounded-lg">
+                                <h2 class="text-xl font-bold text-red-800 mb-2">Zona Berbahaya</h2>
+                                <p class="text-red-700 mb-4">Tindakan ini akan menghapus semua progres hafalan dan riwayat penilaian santri. Data nama santri akan tetap ada.</p>
+                                <button id="reset-hafalan-btn" class="bg-red-600 text-white py-2 px-4 rounded-lg shadow hover:bg-red-700 transition">Reset Semua Data Hafalan</button>
+                            </div>
                         </div>
                     </section>
                 </main>
@@ -867,6 +880,9 @@
         const tesMulaiSurat = document.getElementById('tes-mulai-surat');
         const tesSampaiSurat = document.getElementById('tes-sampai-surat');
         const scrollToTopBtn = document.getElementById('scroll-to-top-btn');
+        const exportCsvBtn = document.getElementById('export-csv-btn');
+        const importCsvBtn = document.getElementById('import-csv-btn');
+        const importCsvInput = document.getElementById('import-csv-input');
 
         // Package Data
         const paketData = {
@@ -1577,16 +1593,22 @@
         
         function updateSlider() {
             const motivationalQuotes = [
-                { quote: "Bacalah Al-Qur'an, karena ia akan datang pada hari kiamat sebagai pemberi syafa'at bagi para pembacanya.", source: "HR. Muslim" },
-                { quote: "Sebaik-baik kalian adalah orang yang belajar Al-Qur'an dan mengajarkannya.", source: "HR. Bukhari" },
-                { quote: "Orang yang mahir membaca Al-Qur'an, kelak (di akhirat) akan bersama para malaikat yang mulia lagi taat.", source: "HR. Bukhari & Muslim" },
-                { quote: "Dan sungguh, telah Kami mudahkan Al-Qur'an untuk pelajaran, maka adakah orang yang mau mengambil pelajaran?", source: "QS. Al-Qamar: 17" }
+                { arabic: "اقْرَءُوا الْقُرْآنَ فَإِنَّهُ يَأْتِي يَوْمَ الْقِيَامَةِ شَفِيعًا لِأَصْحَابِهِ", translation: "Bacalah Al-Qur'an, karena ia akan datang pada hari kiamat sebagai pemberi syafa'at bagi para pembacanya.", source: "HR. Muslim" },
+                { arabic: "خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ", translation: "Sebaik-baik kalian adalah orang yang belajar Al-Qur'an dan mengajarkannya.", source: "HR. Bukhari" },
+                { arabic: "الْمَاهِرُ بِالْقُرْآنِ مَعَ السَّفَرَةِ الْكِرَامِ الْبَرَرَةِ", translation: "Orang yang mahir membaca Al-Qur'an, kelak akan bersama para malaikat yang mulia lagi taat.", source: "HR. Bukhari & Muslim" },
+                { arabic: "وَلَقَدْ يَسَّرْنَا الْقُرْآنَ لِلذِّكْرِ فَهَلْ مِنْ مُدَّكِرٍ", translation: "Dan sungguh, telah Kami mudahkan Al-Qur'an untuk pelajaran, maka adakah orang yang mau mengambil pelajaran?", source: "QS. Al-Qamar: 17" }
             ];
             const sliderContent = document.getElementById('slider-content');
             sliderContent.classList.add('opacity-0');
             setTimeout(() => {
                 const quote = motivationalQuotes[currentSlide];
-                sliderContent.innerHTML = `<p class="font-amiri text-xl lg:text-2xl mb-2">"${quote.quote}"</p><p class="text-sm font-semibold">(${quote.source})</p>`;
+                sliderContent.innerHTML = `
+                    <div class="absolute inset-0 flex flex-col items-center justify-center p-4">
+                        <p class="font-amiri text-2xl md:text-3xl lg:text-4xl leading-relaxed" dir="rtl">${quote.arabic}</p>
+                        <p class="text-sm md:text-base italic mt-3">"${quote.translation}"</p>
+                        <p class="text-xs md:text-sm font-semibold mt-2">(${quote.source})</p>
+                    </div>
+                `;
                 sliderContent.classList.remove('opacity-0');
             }, 500);
         }
@@ -2058,7 +2080,13 @@
         }
         
         function nextSlide() {
-            currentSlide = (currentSlide + 1) % 4;
+            const motivationalQuotes = [
+                { arabic: "اقْرَءُوا الْقُرْآنَ فَإِنَّهُ يَأْتِي يَوْمَ الْقِيَامَةِ شَفِيعًا لِأَصْحَابِهِ", translation: "Bacalah Al-Qur'an, karena ia akan datang pada hari kiamat sebagai pemberi syafa'at bagi para pembacanya.", source: "HR. Muslim" },
+                { arabic: "خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ", translation: "Sebaik-baik kalian adalah orang yang belajar Al-Qur'an dan mengajarkannya.", source: "HR. Bukhari" },
+                { arabic: "الْمَاهِرُ بِالْقُرْآنِ مَعَ السَّفَرَةِ الْكِرَامِ الْبَرَرَةِ", translation: "Orang yang mahir membaca Al-Qur'an, kelak akan bersama para malaikat yang mulia lagi taat.", source: "HR. Bukhari & Muslim" },
+                { arabic: "وَلَقَدْ يَسَّرْنَا الْقُرْآنَ لِلذِّكْرِ فَهَلْ مِنْ مُدَّكِرٍ", translation: "Dan sungguh, telah Kami mudahkan Al-Qur'an untuk pelajaran, maka adakah orang yang mau mengambil pelajaran?", source: "QS. Al-Qamar: 17" }
+            ];
+            currentSlide = (currentSlide + 1) % motivationalQuotes.length;
             updateSlider();
         }
 
@@ -2068,13 +2096,13 @@
                 return;
             }
             let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "Nama Santri,Kelas,Hafalan Saat Ini\r\n";
+            csvContent += "Nama Santri,Nama Kelas\r\n";
             
             santriData.forEach(santri => {
                 const kelas = kelasData.find(k => k.id === santri.kelasId);
-                const namaKelas = kelas ? kelas.nama_kelas : 'Tanpa Kelas';
-                const hafalanSaatIni = getCurrentHafalanDisplay(santri);
-                let row = `"${santri.nama_santri}","${namaKelas}","${hafalanSaatIni}"`;
+                const namaKelas = kelas ? kelas.nama_kelas.replace(/"/g, '""') : 'Tanpa Kelas';
+                const namaSantri = santri.nama_santri.replace(/"/g, '""');
+                let row = `"${namaSantri}","${namaKelas}"`;
                 csvContent += row + "\r\n";
             });
             
@@ -2084,6 +2112,121 @@
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+        }
+
+        async function handleFileChange(event) {
+            const file = event.target.files?.[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const text = e.target?.result;
+                if (typeof text === 'string') {
+                    await importData(text);
+                }
+            };
+            reader.onerror = () => {
+                showToast("Gagal membaca file.", true);
+            };
+            reader.readAsText(file);
+            
+            event.target.value = ''; // Reset input
+        }
+
+        async function importData(csvString) {
+            if (!currentUserId) {
+                showToast("Pengguna tidak terautentikasi.", true);
+                return;
+            }
+
+            const lines = csvString.trim().split('\n').filter(line => line.trim() !== '');
+            if (lines.length <= 1) {
+                showToast('File CSV kosong atau hanya berisi header.', true);
+                return;
+            }
+
+            const headerLine = lines.shift();
+            const header = headerLine.toLowerCase().split(',').map(h => h.trim().replace(/"/g, ''));
+            const santriNameIndex = header.indexOf('nama santri');
+            const kelasNameIndex = header.indexOf('nama kelas');
+
+            if (santriNameIndex === -1 || kelasNameIndex === -1) {
+                showToast('Header CSV harus mengandung "Nama Santri" dan "Nama Kelas".', true);
+                return;
+            }
+            
+            showToast("Memproses impor data...");
+
+            try {
+                const batch = writeBatch(db);
+                const newKelasMap = new Map();
+                const addedSantriMap = new Map();
+                let newKelasCount = 0;
+                let newSantriCount = 0;
+                let skippedCount = 0;
+
+                for (const line of lines) {
+                    const values = line.split(',').map(v => v.trim().replace(/"/g, ''));
+                    const santriName = values[santriNameIndex];
+                    const kelasName = values[kelasNameIndex];
+
+                    if (!santriName || !kelasName) {
+                        skippedCount++;
+                        continue;
+                    }
+
+                    let kelasObj = kelasData.find(k => k.nama_kelas.toLowerCase() === kelasName.toLowerCase());
+                    let kelasId;
+
+                    if (kelasObj) {
+                        kelasId = kelasObj.id;
+                    } else {
+                        if (newKelasMap.has(kelasName.toLowerCase())) {
+                            kelasId = newKelasMap.get(kelasName.toLowerCase()).id;
+                        } else {
+                            const newKelasRef = doc(collection(db, 'users', currentUserId, 'kelas'));
+                            const newKelasPayload = {
+                                nama_kelas: kelasName,
+                                targetHafalan: { dariSurat: 78, sampaiSurat: 114 }, // Default Juz Amma
+                            };
+                            batch.set(newKelasRef, newKelasPayload);
+                            
+                            kelasId = newKelasRef.id;
+                            newKelasMap.set(kelasName.toLowerCase(), { id: kelasId, ...newKelasPayload });
+                            newKelasCount++;
+                        }
+                    }
+                    
+                    const santriExists = santriData.some(s => 
+                        s.nama_santri.toLowerCase() === santriName.toLowerCase() && s.kelasId === kelasId
+                    );
+                    
+                    const santriKey = `${kelasId}_${santriName.toLowerCase()}`;
+                    const santriAddedInThisBatch = addedSantriMap.has(santriKey);
+
+                    if (!santriExists && !santriAddedInThisBatch) {
+                        const newSantriRef = doc(collection(db, 'users', currentUserId, 'kelas', kelasId, 'santri'));
+                        batch.set(newSantriRef, { nama_santri: santriName });
+                        addedSantriMap.set(santriKey, true);
+                        newSantriCount++;
+                    } else {
+                        skippedCount++;
+                    }
+                }
+
+                await batch.commit();
+
+                let message = `Impor selesai. Ditambahkan: ${newSantriCount} santri & ${newKelasCount} kelas baru.`;
+                if (skippedCount > 0) {
+                    message += ` ${skippedCount} data dilewati (duplikat/tidak valid).`;
+                }
+                showToast(message);
+                await refreshAllData();
+                
+            } catch (error) {
+                console.error("Gagal mengimpor data:", error);
+                showToast("Terjadi kesalahan saat mengimpor data.", true);
+            }
         }
         
         function populateJuzSelect() {
@@ -2312,7 +2455,9 @@
                 saveAssessmentBtn.addEventListener('click', handleSaveAssessment);
                 generateTestBtn.addEventListener('click', handleGenerateTest);
                 resetHafalanBtn.addEventListener('click', handleResetHafalan);
-                document.getElementById('export-csv-btn').addEventListener('click', exportToCsv);
+                exportCsvBtn.addEventListener('click', exportToCsv);
+                importCsvBtn.addEventListener('click', () => importCsvInput.click());
+                importCsvInput.addEventListener('change', handleFileChange);
                 confirmCancelBtn.addEventListener('click', hideConfirmDialog);
                 confirmActionBtn.addEventListener('click', () => { if (confirmActionCallback) confirmActionCallback(); });
                 
@@ -2441,6 +2586,5 @@
         });
 
     </script>
-<script type="module" src="/index.tsx"></script>
 </body>
 </html>
