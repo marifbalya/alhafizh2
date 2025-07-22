@@ -1,0 +1,6 @@
+{
+  "name": "Al Hafizh - Login & Dasbor",
+  "description": "An application to help manage and track Quran memorization (hafalan). Features user authentication with Firebase to save data to the cloud, student and class management, memorization tracking, a Murottal player, and other tools.",
+  "requestFramePermissions": [],
+  "prompt": ""
+}
